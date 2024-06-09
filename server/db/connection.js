@@ -1,15 +1,15 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 
-let db = null
+let db = null;
 
 const connectDB = async (done) => {
     try {
-        var data = await MongoClient.connect(process.env.MONGO_URL, { useNewUrlParser: true })
-        db = data.db('chatGPT')
-        done()
+        const data = await MongoClient.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+        db = data.db('chatGPT');
+        done();
     } catch (err) {
-        done(err)
+        done(err);
     }
-}
+};
 
-export { connectDB, db }
+export { connectDB, db };

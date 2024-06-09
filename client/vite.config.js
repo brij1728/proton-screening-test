@@ -1,16 +1,16 @@
+import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
     host: true,
-    port: 80,
+    port: 3000,
     strictPort: true,
     proxy: {
       "/api": {
-        target: "http://localhost:5000/api",
+        target: process.env.VITE_BACKEND_URL ?? "http://localhost:5000/api",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

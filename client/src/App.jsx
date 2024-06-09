@@ -1,11 +1,12 @@
-import { createContext, useEffect, useLayoutEffect, useState } from "react";
-import { Menu } from "./components";
-import { Routes, Route } from "react-router-dom";
 import { Error, Forgot, Login, Main, Signup } from "./page";
-import { useSelector } from "react-redux";
-import ProtectedRoute from "./protected";
+import { Route, Routes } from "react-router-dom";
+import { createContext, useEffect, useLayoutEffect, useState } from "react";
+
 import Loading from "./components/loading/loading";
+import { Menu } from "./components";
+import ProtectedRoute from "./protected";
 import instance from "./config/instance";
+import { useSelector } from "react-redux";
 
 export const documentsContext = createContext({
   documents: [],
@@ -83,6 +84,7 @@ const App = () => {
         )}
 
         {loading && <Loading />}
+        <h1>Proton</h1>
 
         {offline && (
           <Error

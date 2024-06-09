@@ -1,14 +1,14 @@
-import React, { useLayoutEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { setLoading } from "./redux/loading";
-import instance from "./config/instance";
+import React, { useLayoutEffect, useState } from "react";
 import { emptyUser, insertUser } from "./redux/user";
+
 import { emptyAllRes } from "./redux/messages";
+import instance from "./config/instance";
+import { setLoading } from "./redux/loading";
+import { useDispatch } from "react-redux";
 
 const ProtectedRoute = ({ offline, authed }) => {
   const [component, setComponent] = useState(null);
-
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,6 +22,9 @@ const ProtectedRoute = ({ offline, authed }) => {
         res = await instance.get("/api/user/checkLogged");
         if (res?.data?.data) {
           dispatch(insertUser(res?.data?.data));
+          setComponent(<Outlet />);
+        } else {
+          throw new Error("No data in response");
         }
       } catch (err) {
         console.log(err);
@@ -34,22 +37,20 @@ const ProtectedRoute = ({ offline, authed }) => {
           } else {
             setComponent(<Outlet />);
           }
-        } else if (err?.code !== "ERR_NETWORK") {
+        } else if (err?.code === "ERR_NETWORK") {
+          console.log("Network error, check your backend server");
+        } else {
           navigate("/something-went-wrong");
         }
       } finally {
-        if (res?.data?.status === 208) {
-          if (!authed) {
-            navigate("/");
-          } else {
-            setComponent(<Outlet />);
-          }
-        }
+        dispatch(setLoading(false));
       }
     };
 
     if (!offline) {
       getResponse();
+    } else {
+      setComponent(<Outlet />);
     }
   }, [location]);
 

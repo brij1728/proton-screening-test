@@ -1,4 +1,5 @@
 FROM node:20.11.0-alpine
+RUN apk add --no-cache python3 make g++ && ln -sf python3 /usr/bin/python
 RUN mkdir -p /server
 WORKDIR /server
 
