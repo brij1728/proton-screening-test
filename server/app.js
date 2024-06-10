@@ -1,10 +1,10 @@
-import express from 'express'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import dotnet from 'dotenv'
-import { connectDB } from './db/connection.js'
 import ChatRoute from './routes/chat.js'
 import UserRoute from './routes/user.js'
+import { connectDB } from './db/connection.js'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import dotnet from 'dotenv'
+import express from 'express'
 import path from 'path'
 dotnet.config()
 
