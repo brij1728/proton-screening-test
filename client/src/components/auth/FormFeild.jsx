@@ -1,9 +1,7 @@
-import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { Eye, EyeHide } from '../../assets'
+import React, { Fragment, useCallback, useRef, useState } from 'react'
 
-const FormFeild = ({ label,
-    value, name, type, handleInput,
-    passwordClass, isDisabled, error }) => {
+const FormFeild = ({ label, value, name, type, handleInput, passwordClass, isDisabled, error, placeholder }) => {
 
     const [showPass, setShowPass] = useState(false)
 
@@ -30,7 +28,7 @@ const FormFeild = ({ label,
                 className={`${error && 'warning-input'} ${inputRef ? value ? 'inputEffect active-input' : 'inputEffect' : ''}`}
                 value={value} name={name}
 
-                ref={inputRef} type={type} onFocus={() => {
+                ref={inputRef} type={type} placeholder={placeholder} onFocus={() => {
                     inputClass(true, ["active-label", "active-label-green"], ["active-input", "active-input-green"])
                 }}
 
@@ -57,6 +55,8 @@ const FormFeild = ({ label,
 
                 disabled={isDisabled} readOnly={isDisabled} required
             />
+
+            {error && <div className='error-message'>{error}</div>}
 
             {
                 type === 'password' && <>

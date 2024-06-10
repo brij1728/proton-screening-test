@@ -1,11 +1,13 @@
-import React, { Fragment, useCallback, useReducer, useState } from 'react'
-import { Grant, Tick, Google, Microsoft, Mail, } from '../../assets'
+import './style.scss'
+
+import { Google, Grant, Mail, Microsoft, Tick, } from '../../assets'
 import { Link, useNavigate } from 'react-router-dom'
-import { useGoogleLogin } from '@react-oauth/google'
+import React, { Fragment, useCallback, useReducer, useState } from 'react'
+
 import FormFeild from './FormFeild'
 import axios from 'axios'
 import instance from '../../config/instance'
-import './style.scss'
+import { useGoogleLogin } from '@react-oauth/google'
 
 const reducer = (state, { type, status }) => {
   switch (type) {
@@ -133,7 +135,9 @@ const SignupComponent = () => {
                         name={'email'}
                         label={"Email address"}
                         type={"email"}
+                        placeholder={"name@protondatalabs.com or name@grantengine.com"}
                         handleInput={handleInput}
+                        error={!formData.email.endsWith("@protondatalabs.com") && !formData.email.endsWith("@grantengine.com") && formData.email && "Please use a valid company email address"}
                       />
                     </div>
                     <div>
@@ -170,11 +174,8 @@ const SignupComponent = () => {
                         name={'email'}
                         type={"email"}
                         isDisabled
-                        error={state?.error} />
-                    </div>
-
-                    <div>
-                      {state?.error && <div className='error'><div>!</div> The user already exists.</div>}
+                        error={state?.error && "The user already exists"}
+                      />
                     </div>
 
                     <div className="password">
@@ -184,8 +185,10 @@ const SignupComponent = () => {
                         name={'pass'}
                         label={"Password"}
                         type={"password"}
+                        placeholder={"At least 8 characters"}
                         passwordClass={passwordClass}
                         handleInput={handleInput}
+                        error={formData.pass.length < 8 && "Password must be at least 8 characters long"}
                       />
 
                     </div>
