@@ -20,14 +20,13 @@ const App = () => {
   const { loading, user } = useSelector((state) => state);
   const [documents, setDocuments] = useState([]);
   const { _id } = useSelector((state) => state.messages);
+
   const changeColorMode = (to) => {
     if (to) {
       localStorage.setItem("darkMode", true);
-
       document.body.className = "dark";
     } else {
       localStorage.removeItem("darkMode");
-
       document.body.className = "light";
     }
   };
@@ -48,27 +47,28 @@ const App = () => {
       }
     }
   };
-  // Dark & Light Mode
+
   useLayoutEffect(() => {
     let mode = localStorage.getItem("darkMode");
-
     if (mode) {
       changeColorMode(true);
     } else {
       changeColorMode(false);
     }
-  });
+  }, []);
 
-  // Offline
   useEffect(() => {
-    window.addEventListener("online", (e) => {
-      location.reload();
-    });
+    const handleOnline = () => location.reload();
+    const handleOffline = () => setOffline(true);
 
-    window.addEventListener("offline", (e) => {
-      setOffline(true);
-    });
-  });
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   return (
     <documentsContext.Provider value={{ documents, setDocuments, getFiles }}>
@@ -87,10 +87,7 @@ const App = () => {
         <h1>Proton</h1>
 
         {offline && (
-          <Error
-            status={503}
-            content={"Website in offline check your network."}
-          />
+          <Error status={503} content={"Website is offline, check your network."} />
         )}
 
         <Routes>
@@ -98,30 +95,15 @@ const App = () => {
             <Route
               exact
               path="/"
-              element={
-                <Main
-                  file_id={file_id}
-                  set_file_id={set_file_id}
-                />
-              }
+              element={<Main file_id={file_id} set_file_id={set_file_id} />}
             />
             <Route
               path="/chat"
-              element={
-                <Main
-                  file_id={file_id}
-                  set_file_id={set_file_id}
-                />
-              }
+              element={<Main file_id={file_id} set_file_id={set_file_id} />}
             />
             <Route
               path="/chat/:id"
-              element={
-                <Main
-                  file_id={file_id}
-                  set_file_id={set_file_id}
-                />
-              }
+              element={<Main file_id={file_id} set_file_id={set_file_id} />}
             />
           </Route>
 
@@ -135,9 +117,7 @@ const App = () => {
           </Route>
           <Route
             path="*"
-            element={
-              <Error status={404} content={"This page could not be found."} />
-            }
+            element={<Error status={404} content={"This page could not be found."} />}
           />
         </Routes>
       </section>
@@ -146,4 +126,3 @@ const App = () => {
 };
 
 export default App;
-

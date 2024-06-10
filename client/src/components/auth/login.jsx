@@ -1,12 +1,14 @@
-import React, { useReducer, useState } from "react";
-import { Grant, Google, Microsoft } from "../../assets";
+import "./style.scss";
+
+import { Google, Grant, Microsoft } from "../../assets";
 import { Link, useNavigate } from "react-router-dom";
+import React, { useReducer, useState } from "react";
+
 import FormFeild from "./FormFeild";
-import { useGoogleLogin } from "@react-oauth/google";
-import { useDispatch } from "react-redux";
 import { insertUser } from "../../redux/user";
 import instance from "../../config/instance";
-import "./style.scss";
+import { useDispatch } from "react-redux";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const reducer = (state, { type, status }) => {
   switch (type) {
@@ -46,11 +48,15 @@ const LoginComponent = () => {
   };
 
   const googleAuth = useGoogleLogin({
+    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
     onSuccess: (response) => {
       formHandle(null, {
         manual: false,
         token: response.access_token,
       });
+    },
+    onFailure: (error) => {
+      console.error("Google login error:", error);
     },
   });
 
@@ -58,12 +64,10 @@ const LoginComponent = () => {
     e.preventDefault();
     const given_otp = e.target.otp.value;
     try {
-      console.log(formData.email, given_otp)
       const otp_res = await instance.post("/api/user/verify_otp", {
         email: formData.email,
         otp: given_otp,
       });
-      console.log(otp_res.data); 
       if (otp_res.status === 200 && otp_res.data.message === "Success") {
         dispatch(insertUser(otp_res.data.data));
         navigate("/chat");
@@ -84,16 +88,12 @@ const LoginComponent = () => {
       res = await instance.get("/api/user/login", {
         params: googleData || { email: formData.email, pass: formData.pass },
       });
-      console.log(googleData);
     } catch (err) {
-      console.log(err);
       if (err?.response?.data?.status === 422) {
         stateAction({ type: "error", status: true });
       }
     } finally {
       if (res?.data?.message === "Success" && res?.data?.status === 200) {
-        console.log(res.data);
-        // stateAction({ type: "error", status: false });
         const user_otp = Math.floor(1000 + Math.random() * 9000);
         setPassword(true);
         setOtp(user_otp);
@@ -101,11 +101,6 @@ const LoginComponent = () => {
           email: formData.email,
           otp: user_otp,
         });
-
-        console.log(user_otp);
-        console.log(otp_res.data)
-        // dispatch(insertUser(res.data.data));
-        // navigate("/two_step_verification");
       }
     }
   };

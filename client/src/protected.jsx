@@ -16,10 +16,8 @@ const ProtectedRoute = ({ offline, authed }) => {
   useLayoutEffect(() => {
     dispatch(setLoading(true));
     const getResponse = async () => {
-      let res = null;
-
       try {
-        res = await instance.get("/api/user/checkLogged");
+        const res = await instance.get("/api/user/checkLogged");
         if (res?.data?.data) {
           dispatch(insertUser(res?.data?.data));
           setComponent(<Outlet />);
@@ -29,7 +27,7 @@ const ProtectedRoute = ({ offline, authed }) => {
       } catch (err) {
         console.log(err);
 
-        if (err?.response?.data?.status === 405) {
+        if (err?.response?.status === 405) {
           dispatch(emptyUser());
           dispatch(emptyAllRes());
           if (authed) {
@@ -52,7 +50,7 @@ const ProtectedRoute = ({ offline, authed }) => {
     } else {
       setComponent(<Outlet />);
     }
-  }, [location]);
+  }, [location, dispatch, authed, navigate, offline]);
 
   return component;
 };
