@@ -3,13 +3,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     host: 'smtp.gmail.com',
+//     auth: {
+//         user: process.env.MAIL_EMAIL,
+//         pass: process.env.MAIL_SECRET
+//     }
+// });
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    auth: {
-        user: process.env.MAIL_EMAIL,
-        pass: process.env.MAIL_SECRET
-    }
+    host: "mailhog",
+    port: 1025,
 });
 
 const sendOTP = ({ to, otp }) => {

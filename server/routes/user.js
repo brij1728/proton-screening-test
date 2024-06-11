@@ -506,13 +506,18 @@ router.post("/otp", async (req, res) => {
   if (req.body?.email) {
     let response = null;
     try {
+      // const transporter = nodemailer.createTransport({
+      //   service: "gmail",
+      //   host: "smtp.gmail.com",
+      //   auth: {
+      //     user: process.env.MAIL_EMAIL,
+      //     pass: process.env.MAIL_SECRET,
+      //   },
+      // });
+
       const transporter = nodemailer.createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        auth: {
-          user: process.env.MAIL_EMAIL,
-          pass: process.env.MAIL_SECRET,
-        },
+          host: "mailhog",
+          port: 1025,
       });
       const html = `<!DOCTYPE html>
         <html lang="en">
@@ -583,12 +588,17 @@ router.post("/send_otp", async (req, res) => {
     let response = null;
     try {
       // Create Nodemailer transporter
+      // const transporter = nodemailer.createTransport({
+      //   service: "gmail",
+      //   auth: {
+      //     user: process.env.MAIL_EMAIL,
+      //     pass: process.env.MAIL_SECRET,
+      //   },
+      // });
+
       const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.MAIL_EMAIL,
-          pass: process.env.MAIL_SECRET,
-        },
+          host: "mailhog",
+          port: 1025,
       });
 
       // Define email options

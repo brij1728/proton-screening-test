@@ -1,21 +1,21 @@
-version: '3.9'
+version: "3.9"
 services:
   server:
-    build: 
+    build:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - "5000:5000"
     environment:
       - MONGO_URL=mongodb://mongo:27017/chat_application
       - PORT=5000
       - SITE_URL=http://localhost:3000
       - JWT_PRIVATE_KEY=your_jwt_private_key
-      - MAIL_EMAIL=bk10895@gmail.com
-      - MAIL_SECRET=your_email_password
-      - AWS_ACCESS_KEY_ID=your_aws_access_key_id
-      - AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
-      - S3_BUCKET_NAME=your_s3_bucket_name
+      - MAIL_EMAIL=${MAIL_EMAIL:-test@gmail.com}
+      - MAIL_SECRET=${MAIL_SECRET:-test}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-your_aws_access_key_id}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-your_aws_secret_access_key}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-your_s3_bucket_name}
 
     depends_on:
       - mongo
@@ -24,18 +24,19 @@ services:
       - /server/node_modules
 
   client:
-    build: 
+    build:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - server
     environment:
       - VITE_API_URL=/
       - VITE_BACKEND_URL=http://server:5000/api
-    links: 
-      - server  
+      - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID:-your_google_client_id}
+    links:
+      - server
     volumes:
       - ./client:/client
       - /client/node_modules
@@ -43,9 +44,15 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - '27017:27017'
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
 
 volumes:
   mongo-data:
